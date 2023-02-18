@@ -236,4 +236,61 @@ def extract_feature_train(url,output):
     
     return yn,length_of_url,http_has,suspicious_char,prefix_suffix,dots,slash,phis_term,sub_domain,ip_contain
 
+#main funcation
+def main():
+    excel_file= 'training.xlsx'
+    df=pd.DataFrame(pd.read_excel(excel_file))
+
+    excel_file_test= 'test1.xlsx'
+    df1=pd.DataFrame(pd.read_excel(excel_file_test))
+
+    a=[]
+    b=[]
+    a1=[]
+    b1=[]
+    for url in df['url']:
+        a.append(url)
+
+    for output in df['phishing']:
+        b.append(output)
+
+    for url1 in df1['url']:
+        a1.append(url1)
+
+    for output in df1['result']:
+        b1.append(output)
+
+
+    c=[]
+    d=[]
+    for url1,output1 in zip(a,b):
+       
+        url=url1
+        output=output1
+        c.append(extract_feature_train(url,output))
+    
+
+    for url1,output1 in zip(a1,b1):
+           
+        url=url1
+        output=output1
+        d.append(extract_feature_test(url,output))
+    
+
+
+    df=pd.DataFrame(c,columns=['r','length_of_url','http_has','suspicious_char','prefix_suffix','dots','slash','phis_term','sub_domain','ip_contain'])
+
+    df.to_csv('feature_train.csv', sep=',', encoding='utf-8')
+
+    df_test=pd.DataFrame(d,columns=['r','length_of_url','http_has','suspicious_char','prefix_suffix','dots','slash','phis_term','sub_domain','ip_contain'])
+
+    df_test.to_csv('feature_test.csv', sep=',', encoding='utf-8')
+
+    print('DONE')
+
+
+
+  
+if __name__== "__main__":
+  main()
 
