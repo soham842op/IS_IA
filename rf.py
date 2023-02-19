@@ -11,7 +11,6 @@ from sklearn.metrics import accuracy_score
 from sklearn.metrics import classification_report 
 from sklearn.naive_bayes import GaussianNB 
 from sklearn import metrics 
-import matplotlib.pyplot as plt
 #importing wx files
 import wx
 #import the newly created GUI file
@@ -185,7 +184,6 @@ def extract_feature_test(url,output):
     yn = output
     
     return yn,length_of_url,http_has,suspicious_char,prefix_suffix,dots,slash,phis_term,sub_domain,ip_contain
-
 #extract training feature
 def extract_feature_train(url,output):
     
@@ -262,8 +260,9 @@ def extract_feature_train(url,output):
     #output
     yn = output
 
+   
+        
     return yn,length_of_url,http_has,suspicious_char,prefix_suffix,dots,slash,phis_term,sub_domain,ip_contain
-
 #import train data
 def importdata_train(): 
     balance_data = pd.read_csv('feature_train.csv',sep= ',', header = 1,usecols=range(1,11),encoding='utf-8') 
@@ -332,15 +331,7 @@ def cal_accuracy(y_test, y_pred):
 
     return accuracy_score(y_test,y_pred)*100
 
-#roc
-def plot_roc_curve(fpr, tpr ):  
-    plt.plot(fpr, tpr, color='orange', label='ROC')
-    plt.plot([0, 1], [0, 1], color='darkblue', linestyle='--')
-    plt.xlabel('False Positive Rate')
-    plt.ylabel('True Positive Rate')
-    plt.title('Receiver Operating Characteristic (ROC) Curve')
-    plt.legend()
-    plt.show()
+
 
 
 #main funcation
@@ -410,121 +401,121 @@ def main():
 
 
     class MainFrame ( wx.Frame ):
-	
-    	def __init__( self, parent ):
-    		wx.Frame.__init__ ( self, parent, id = wx.ID_ANY, title = wx.EmptyString, pos = wx.DefaultPosition, size = wx.Size( 500,300 ), style = wx.DEFAULT_FRAME_STYLE|wx.TAB_TRAVERSAL )
-    
-    		self.SetSizeHintsSz( wx.DefaultSize, wx.DefaultSize )
-    
-    		bSizer3 = wx.BoxSizer( wx.VERTICAL )
-    
-    		self.m_staticText2 = wx.StaticText( self, wx.ID_ANY, u"Enter URL", wx.DefaultPosition, wx.DefaultSize, 0 )
-    		self.m_staticText2.Wrap( -1 )
-    		bSizer3.Add( self.m_staticText2, 0, wx.ALL, 5 )
-		
-    		self.text1 = wx.TextCtrl( self, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
-    		bSizer3.Add( self.text1, 0, wx.ALL|wx.EXPAND, 5 )
-    
-    		self.predictButton = wx.Button( self, wx.ID_ANY, u"Predict_Random Forest", wx.DefaultPosition, wx.DefaultSize, 0 )
-    		bSizer3.Add( self.predictButton, 0, wx.ALL|wx.EXPAND, 5 )
-		
 
-		
-    		# self.label1 = wx.StaticText( self, wx.ID_ANY, u"Result", wx.DefaultPosition, wx.DefaultSize, 0 )
-    		# self.label1.Wrap( -1 )
-    		# bSizer3.Add( self.label1, 0, wx.ALL|wx.ALIGN_CENTER_HORIZONTAL, 5 )
-		
-    		# self.text2 = wx.TextCtrl( self, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
-    		# bSizer3.Add( self.text2, 0, wx.RIGHT|wx.EXPAND, 5 )
-		
-		
-    		self.SetSizer( bSizer3 )
-    		self.Layout()
-		
-    		self.Centre( wx.BOTH )
-		
-    		# Connect Events
-    		self.predictButton.Bind( wx.EVT_BUTTON, self.click )
+        def __init__( self, parent ):
+            wx.Frame.__init__ ( self, parent, id = wx.ID_ANY, title = wx.EmptyString, pos = wx.DefaultPosition, size = wx.Size( 500,300 ), style = wx.DEFAULT_FRAME_STYLE|wx.TAB_TRAVERSAL )
 
-	
-    	def __del__( self ):
-    		pass
-	
-	
-    	# Virtual event handlers, overide them in your derived class
+            self.SetSizeHintsSz( wx.DefaultSize, wx.DefaultSize )
+
+            bSizer3 = wx.BoxSizer( wx.VERTICAL )
+
+            self.m_staticText2 = wx.StaticText( self, wx.ID_ANY, u"Enter URL", wx.DefaultPosition, wx.DefaultSize, 0 )
+            self.m_staticText2.Wrap( -1 )
+            bSizer3.Add( self.m_staticText2, 0, wx.ALL, 5 )
+        
+            self.text1 = wx.TextCtrl( self, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
+            bSizer3.Add( self.text1, 0, wx.ALL|wx.EXPAND, 5 )
+
+            self.predictButton = wx.Button( self, wx.ID_ANY, u"Predict_Random Forest", wx.DefaultPosition, wx.DefaultSize, 0 )
+            bSizer3.Add( self.predictButton, 0, wx.ALL|wx.EXPAND, 5 )
+        
+
+        
+            # self.label1 = wx.StaticText( self, wx.ID_ANY, u"Result", wx.DefaultPosition, wx.DefaultSize, 0 )
+            # self.label1.Wrap( -1 )
+            # bSizer3.Add( self.label1, 0, wx.ALL|wx.ALIGN_CENTER_HORIZONTAL, 5 )
+        
+            # self.text2 = wx.TextCtrl( self, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
+            # bSizer3.Add( self.text2, 0, wx.RIGHT|wx.EXPAND, 5 )
+        
+        
+            self.SetSizer( bSizer3 )
+            self.Layout()
+        
+            self.Centre( wx.BOTH )
+        
+            # Connect Events
+            self.predictButton.Bind( wx.EVT_BUTTON, self.click )
+
+
+        def __del__( self ):
+            pass
+
+
+        # Virtual event handlers, overide them in your derived class
 
 
 
         #XGBOOST
-    	def click( self, event ):
-    	    try:
-    	        url = self.text1.GetValue()
-    	        e=np.array([extract_feature_usertest(url)])
-    	        userpredict1 = model.predict(e.reshape(1,-1)) 
-    	        if(userpredict1[0]=='0'):
-    	            # self.text2.SetValue(str("Legitimate"))
-    	            print('Legitimate')
-    	            class MyDialog1 ( wx.Dialog ):
-	
-    	                def __init__( self, parent ):
-    	                	wx.Dialog.__init__ ( self, parent, id = wx.ID_ANY, title = wx.EmptyString, pos = wx.DefaultPosition, size = wx.Size( 159,114 ), style = wx.DEFAULT_DIALOG_STYLE )
-		
-    	                	self.SetSizeHintsSz( wx.DefaultSize, wx.DefaultSize )
-		
-    	                	sbSizer1 = wx.StaticBoxSizer( wx.StaticBox( self, wx.ID_ANY, u"POP-UP" ), wx.VERTICAL )
-		
-    	                	self.m_staticText1 = wx.StaticText( sbSizer1.GetStaticBox(), wx.ID_ANY, u"LEGITIMATE", wx.DefaultPosition, wx.DefaultSize, 0 )
-    	                	self.m_staticText1.Wrap( -1 )
-    	                	sbSizer1.Add( self.m_staticText1, 0, wx.ALL|wx.ALIGN_CENTER_HORIZONTAL, 5 )
+        def click( self, event ):
+            try:
+                url = self.text1.GetValue()
+                e=np.array([extract_feature_usertest(url)])
+                userpredict1 = model.predict(e.reshape(1,-1)) 
+                if(userpredict1[0]=='0'):
+                    # self.text2.SetValue(str("Legitimate"))
+                    print('Legitimate')
+                    class MyDialog1 ( wx.Dialog ):
 
-    	                	self.SetSizer( sbSizer1 )
-    	                	self.Layout()
-		
-    	                	self.Centre( wx.BOTH )
+                        def __init__( self, parent ):
+                            wx.Dialog.__init__ ( self, parent, id = wx.ID_ANY, title = wx.EmptyString, pos = wx.DefaultPosition, size = wx.Size( 159,114 ), style = wx.DEFAULT_DIALOG_STYLE )
+        
+                            self.SetSizeHintsSz( wx.DefaultSize, wx.DefaultSize )
+        
+                            sbSizer1 = wx.StaticBoxSizer( wx.StaticBox( self, wx.ID_ANY, u"POP-UP" ), wx.VERTICAL )
+        
+                            self.m_staticText1 = wx.StaticText( sbSizer1.GetStaticBox(), wx.ID_ANY, u"LEGITIMATE", wx.DefaultPosition, wx.DefaultSize, 0 )
+                            self.m_staticText1.Wrap( -1 )
+                            sbSizer1.Add( self.m_staticText1, 0, wx.ALL|wx.ALIGN_CENTER_HORIZONTAL, 5 )
 
-    	            app3 = wx.App(False)
-    	            frame = MyDialog1(None)
-    	            frame.Show(True)
-    	            webbrowser.open(url)
-    	            app3.MainLoop()
+                            self.SetSizer( sbSizer1 )
+                            self.Layout()
+        
+                            self.Centre( wx.BOTH )
 
-    	        else:
-    	            class MyDialog1 ( wx.Dialog ):
-	
-    	                def __init__( self, parent ):
-    	                	wx.Dialog.__init__ ( self, parent, id = wx.ID_ANY, title = wx.EmptyString, pos = wx.DefaultPosition, size = wx.Size( 200,150), style = wx.DEFAULT_DIALOG_STYLE )
-		
-    	                	self.SetSizeHintsSz( wx.DefaultSize, wx.DefaultSize )
-		
-    	                	sbSizer1 = wx.StaticBoxSizer( wx.StaticBox( self, wx.ID_ANY, u"Error" ), wx.VERTICAL )
-		
-    	                	self.m_staticText1 = wx.StaticText( sbSizer1.GetStaticBox(), wx.ID_ANY, u"PHISING", wx.DefaultPosition, wx.DefaultSize, 0 )
-    	                	self.m_staticText1.Wrap( -1 )
-    	                	sbSizer1.Add( self.m_staticText1, 0, wx.ALL|wx.ALIGN_CENTER_HORIZONTAL, 5 )
+                    app3 = wx.App(False)
+                    frame = MyDialog1(None)
+                    frame.Show(True)
+                    webbrowser.open(url)
+                    app3.MainLoop()
+
+                else:
+                    class MyDialog1 ( wx.Dialog ):
+
+                        def __init__( self, parent ):
+                            wx.Dialog.__init__ ( self, parent, id = wx.ID_ANY, title = wx.EmptyString, pos = wx.DefaultPosition, size = wx.Size( 200,150), style = wx.DEFAULT_DIALOG_STYLE )
+        
+                            self.SetSizeHintsSz( wx.DefaultSize, wx.DefaultSize )
+        
+                            sbSizer1 = wx.StaticBoxSizer( wx.StaticBox( self, wx.ID_ANY, u"Error" ), wx.VERTICAL )
+        
+                            self.m_staticText1 = wx.StaticText( sbSizer1.GetStaticBox(), wx.ID_ANY, u"PHISING", wx.DefaultPosition, wx.DefaultSize, 0 )
+                            self.m_staticText1.Wrap( -1 )
+                            sbSizer1.Add( self.m_staticText1, 0, wx.ALL|wx.ALIGN_CENTER_HORIZONTAL, 5 )
 
 
-    	
-    	                	self.SetSizer( sbSizer1 )
-    	                	self.Layout()
-		
-    	                	self.Centre( wx.BOTH )
+        
+                            self.SetSizer( sbSizer1 )
+                            self.Layout()
+        
+                            self.Centre( wx.BOTH )
 
-    	                	def __del__( self ):
-    	                		pass
-	
-	
-	# Virtual event handlers, overide them in your derived class
-    	                	def click( self, event ):
-    	                		event.Skip()
-    	            app2 = wx.App(False)
-    	            frame = MyDialog1(None)
-    	            frame.Show(True)
-    	            app2.MainLoop() 
+                            def __del__( self ):
+                                pass
 
-    	            # self.text2.SetValue(str("Phising"))
-    	            # print('Phising')
-    	    except Exception:
-    	        print ('error')
+
+    # Virtual event handlers, overide them in your derived class
+                            def click( self, event ):
+                                event.Skip()
+                    app2 = wx.App(False)
+                    frame = MyDialog1(None)
+                    frame.Show(True)
+                    app2.MainLoop() 
+
+                    # self.text2.SetValue(str("Phising"))
+                    # print('Phising')
+            except Exception:
+                print ('error')
 
 
 
@@ -532,3 +523,12 @@ def main():
     frame = MainFrame(None)
     frame.Show(True)
     app1.MainLoop() 
+
+
+
+
+
+
+  
+if __name__== "__main__":
+  main()
